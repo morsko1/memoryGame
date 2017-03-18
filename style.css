@@ -1,0 +1,32 @@
+*{
+	box-sizing: border-box;
+}
+.field{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-around;
+
+	width: 400px;
+	margin-right: auto;
+	margin-left: auto;
+	background-color: #C1A8BF;
+}
+.item{
+	width: 20%;
+	height: 5em;
+	margin: 0.6em;
+	background-color: #6899EE;
+}
+/*.selected{
+	background-color: #EE68BD;
+}*/
+img{
+	width: 100%
+}
+.hidden{
+	display: none;
+}
+.hidden-forever{
+	display: none;
+}
