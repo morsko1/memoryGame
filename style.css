@@ -17,6 +17,7 @@
 	height: 5em;
 	margin: 0.6em;
 	background-color: #6899EE;
+	cursor: pointer;
 }
 /*.selected{
 	background-color: #EE68BD;
@@ -29,4 +30,33 @@ img{
 }
 .hidden-forever{
 	display: none;
+}
+.info{
+	font-size: 2em;
+	width: 400px;
+	height: 2em;
+	margin: 0 auto;
+	background-color: #C1A8BF;
+	border-bottom: 2px solid #777;
+	padding: 0.5em;
+}
+/*.time{
+	position: absolute;
+	font-size: 2em;
+}*/
+.steps{
+	float: right;
+}
+.newgame{
+	font-size: 1.5em;
+	background-color: #C1A8BF;
+	width: 8em;
+	margin: 10px auto;
+	text-align: center;
+	padding: 1em;
+	border-radius: 0.5em;
+	cursor: pointer;
+}
+.newgame:hover{
+	color: white;
 }
