@@ -25,19 +25,20 @@ var memory = (function () {
 				item.style.backgroundColor = colors[i];
 			}
 		},
-		turn = function (e) {
-
+		flip = function (e) {
 			var target = (e.target.tagName === 'DIV')? e.target: e.target.parentElement;
-
 			if (target === field || target.classList.contains('freezed')) {
 				return;
-			}numSteps++;
+			}
+			numSteps++;
 			steps.innerHTML = numSteps;
 
 			if (counter === 2) {
 				for (var i=0; i<field.children.length; i++) {
 					var item = field.children[i];
-					if (item.classList.contains('freezed')) continue;
+					if (item.classList.contains('freezed')) {
+						continue;
+					}
 					item.firstChild.classList.remove('hidden');
 				}
 				counter = 0;
@@ -50,16 +51,13 @@ var memory = (function () {
 			target.firstChild.classList.add('hidden');
 			counter++;
 
-
-
 			if (areSame()) {
 				freeze();
 			}
-
+			// if game finished
 			if (document.getElementsByClassName('item').length === document.getElementsByClassName('freezed').length) {
-				stopTimer();
+				finishGame();
 			}
-
 		},
 		areSame = function () {
 			var items = document.getElementsByClassName('hidden');
@@ -78,16 +76,14 @@ var memory = (function () {
 				item.classList.remove('hidden');
 				item.classList.add('hidden-forever');
 			}
-
 		},
 		startTimer = function () {
 			if (timerStarted) {
 				return;
 			}
 			timerStarted = true;
-			var time = document.getElementById('time'),
-				secSpan = time.getElementsByClassName('sec')[0];
-				minSpan = time.getElementsByClassName('min')[0];
+			var secSpan = document.getElementsByClassName('sec')[0];
+				minSpan = document.getElementsByClassName('min')[0];
 				minVal = 0,
 				secVal = 0;
 			timerSec = setInterval(function () {
@@ -105,8 +101,21 @@ var memory = (function () {
 			clearInterval(timerSec);
 			clearInterval(timerMin);
 		},
+		finishGame = function () {
+			stopTimer();
+			var msg = document.createElement('div');
+			var pos = field.getBoundingClientRect();
+			console.log(pos);
+			field.classList.add('blured');
+			msg.classList.add('win');
+			msg.style.width = field.offsetWidth + 'px';
+			msg.style.left = pos.left + 'px';
+			msg.style.paddingTop = parseInt(field.offsetHeight)/2 - 32 + 'px';
+			msg.innerHTML = 'Победа!'
+			document.body.insertBefore(msg, field);
+		},
 		addListeners = function () {
-			field.addEventListener('click', turn);
+			field.addEventListener('click', flip);
 			newGame.addEventListener('click', function () {
 				location.reload();
 			});
