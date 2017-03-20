@@ -14,22 +14,35 @@ var memory = (function () {
 				var color = '#' + Math.floor(Math.random() * 16777215).toString(16);
 				colors.push(color, color);
 			}
-			colors.sort(function () {
-				return Math.random-0.5;
-			});
 			console.log(colors);
 		},
 		setColors = function () {
+				function getRandomInt(min, max) {
+					return Math.floor(Math.random() * (max - min + 1)) + min;
+				}
+			var arr = [];
+			for (var k = 0; k<field.children.length; k++) {
+				arr.push(k);
+			}
+			console.log(arr);
 			for (var i=0; i<field.children.length; i++) {
 				var item = field.children[i];
-				item.style.backgroundColor = colors[i];
+				var l = getRandomInt(0, arr.length-1);
+				console.log(l);
+				item.style.backgroundColor = colors[arr.splice(l, 1)];
 			}
+		},
+		animate = function (elem) {
+			var angle = elem.dataset.angle = parseInt(elem.dataset.angle) + 180;
+			elem.style.transform = 'rotatey(' + angle + 'deg)';
+			elem.style.transitionDuration = '0.8s';
 		},
 		flip = function (e) {
 			var target = (e.target.tagName === 'DIV')? e.target: e.target.parentElement;
 			if (target === field || target.classList.contains('freezed')) {
 				return;
 			}
+			animate(target);
 			numSteps++;
 			steps.innerHTML = numSteps;
 
@@ -75,7 +88,13 @@ var memory = (function () {
 				item.parentElement.classList.add('freezed');
 				item.classList.remove('hidden');
 				item.classList.add('hidden-forever');
+				playSound('audio/yes.mp3');
 			}
+		},
+		playSound = function (src) {
+			var audio = new Audio();
+			audio.src = src;
+			audio.autoplay = true;
 		},
 		startTimer = function () {
 			if (timerStarted) {
@@ -105,7 +124,6 @@ var memory = (function () {
 			stopTimer();
 			var msg = document.createElement('div');
 			var pos = field.getBoundingClientRect();
-			console.log(pos);
 			field.classList.add('blured');
 			msg.classList.add('win');
 			msg.style.width = field.offsetWidth + 'px';
@@ -113,18 +131,19 @@ var memory = (function () {
 			msg.style.paddingTop = parseInt(field.offsetHeight)/2 - 32 + 'px';
 			msg.innerHTML = 'Победа!'
 			document.body.insertBefore(msg, field);
+			playSound('audio/win.mp3');
 		},
 		addListeners = function () {
 			field.addEventListener('click', flip);
 			newGame.addEventListener('click', function () {
 				location.reload();
 			});
+			field.addEventListener('click', startTimer);
 		},
 		init = function () {
 			makeColors();
 			setColors();
 			addListeners();
-			field.addEventListener('click', startTimer);
 		};
 		return {
 			init: init
