@@ -20,77 +20,36 @@ var memory = (function () {
 				function getRandomInt(min, max) {
 					return Math.floor(Math.random() * (max - min + 1)) + min;
 				}
+			var fronts = document.getElementsByClassName('front');
 			var arr = [];
-			for (var k = 0; k<field.children.length; k++) {
+			for (var k = 0; k<fronts.length; k++) {
 				arr.push(k);
 			}
 			console.log(arr);
-			for (var i=0; i<field.children.length; i++) {
-				var item = field.children[i];
+			for (var i=0; i<fronts.length; i++) {
+				var front = fronts[i];
 				var l = getRandomInt(0, arr.length-1);
 				console.log(l);
-				item.style.backgroundColor = colors[arr.splice(l, 1)];
+				front.style.backgroundColor = colors[arr.splice(l, 1)];
 			}
 		},
 		animate = function (elem) {
-			var angle = elem.dataset.angle = parseInt(elem.dataset.angle) + 180;
-			elem.style.transform = 'rotatey(' + angle + 'deg)';
-			elem.style.transitionDuration = '0.8s';
 		},
-		flip = function (e) {
-			var target = (e.target.tagName === 'DIV')? e.target: e.target.parentElement;
-			if (target === field || target.classList.contains('freezed')) {
+		flip = function (event) {
+			var target = event.target.parentElement;
+			if (target === document.body || target.classList.contains('freezed')) {
 				return;
 			}
-			animate(target);
-			numSteps++;
-			steps.innerHTML = numSteps;
+			console.log(target);
 
-			if (counter === 2) {
-				for (var i=0; i<field.children.length; i++) {
-					var item = field.children[i];
-					if (item.classList.contains('freezed')) {
-						continue;
-					}
-					item.firstChild.classList.remove('hidden');
-				}
-				counter = 0;
+			target.classList.contains("flipped") === true ? target.classList.remove("flipped") : target.classList.add("flipped");
+			// target.addEventListener( "click", function() {
+			// 			var c = this.classList;
+			// 			c.contains("flipped") === true ? c.remove("flipped") : c.add("flipped");
+			// 		});
 
-				target.firstChild.classList.add('hidden');
-				counter++;
-				return;
-			}
-
-			target.firstChild.classList.add('hidden');
-			counter++;
-
-			if (areSame()) {
-				freeze();
-			}
-			// if game finished
-			if (document.getElementsByClassName('item').length === document.getElementsByClassName('freezed').length) {
-				finishGame();
-			}
 		},
-		areSame = function () {
-			var items = document.getElementsByClassName('hidden');
-			if (items.length !== 2) return false;
-			if (items[0].parentElement.style.backgroundColor === items[1].parentElement.style.backgroundColor) {
-				return true;
-			}
-			return false;
-		},
-		freeze = function () {
-			// querySelectorAll для того, чтобы список элементов был нединамическим
-			var items = document.querySelectorAll('.hidden');
-			for (var i=0; i<items.length; i++) {
-				var item = items[i];
-				item.parentElement.classList.add('freezed');
-				item.classList.remove('hidden');
-				item.classList.add('hidden-forever');
-				playSound('audio/yes.mp3');
-			}
-		},
+		
 		playSound = function (src) {
 			var audio = new Audio();
 			audio.src = src;
@@ -135,6 +94,11 @@ var memory = (function () {
 		},
 		addListeners = function () {
 			field.addEventListener('click', flip);
+			var items = document.getElementsByClassName('item');
+			// for ( var i  = 0, len = items.length; i < len; i++ ) {
+			// 		var item = items[i];
+			// 		flip( item );
+			// 	}
 			newGame.addEventListener('click', function () {
 				location.reload();
 			});
