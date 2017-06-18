@@ -14,7 +14,6 @@ var memory = (function () {
 				var color = '#' + Math.floor(Math.random() * 16777215).toString(16);
 				colors.push(color, color);
 			}
-			console.log(colors);
 		},
 		setColors = function () {
 				function getRandomInt(min, max) {
@@ -25,31 +24,71 @@ var memory = (function () {
 			for (var k = 0; k<fronts.length; k++) {
 				arr.push(k);
 			}
-			console.log(arr);
+			// console.log(arr);
 			for (var i=0; i<fronts.length; i++) {
 				var front = fronts[i];
 				var l = getRandomInt(0, arr.length-1);
-				console.log(l);
 				front.style.backgroundColor = colors[arr.splice(l, 1)];
 			}
 		},
-		animate = function (elem) {
+		showHide = function () {
+			var items = document.getElementsByClassName('item');
+			for (var i=0; i<items.length; i++) {
+				items[i].classList.toggle('freezed');
+			}
 		},
 		flip = function (event) {
 			var target = event.target.parentElement;
 			if (target === document.body || target.classList.contains('freezed')) {
 				return;
 			}
-			console.log(target);
 
-			target.classList.contains("flipped") === true ? target.classList.remove("flipped") : target.classList.add("flipped");
-			// target.addEventListener( "click", function() {
-			// 			var c = this.classList;
-			// 			c.contains("flipped") === true ? c.remove("flipped") : c.add("flipped");
-			// 		});
+			numSteps++;
+			steps.innerHTML = numSteps;
 
+			if (counter === 2) {
+				for (var i=0; i<field.children.length; i++) {
+					var item = field.children[i];
+					if (item.classList.contains('freezed')) {
+						continue;
+					}
+					item.classList.remove('flipped');
+				}
+			counter = 0;
+			} // end if
+
+			target.classList.contains('flipped') === true ? target.classList.remove('flipped') : target.classList.add('flipped');
+			counter++;
+
+			if (areSame()) {
+				console.log('same');
+				freeze();
+			}
+			// if game finished
+			if (document.getElementsByClassName('item').length === document.getElementsByClassName('freezed').length) {
+				finishGame();
+			}
 		},
-		
+		areSame = function () {
+			var items = document.getElementsByClassName('flipped');
+			if (items.length !== 2) {
+				return false;
+			}
+			if (items[0].firstElementChild.style.backgroundColor === items[1].firstElementChild.style.backgroundColor) {
+				return true;
+			}
+			return false;
+		},
+		freeze = function () {
+			// querySelectorAll для того, чтобы список элементов был нединамическим
+			var items = document.querySelectorAll('.flipped');
+			for (var i=0; i<items.length; i++) {
+				var item = items[i];
+				item.classList.remove('flipped');
+				item.classList.add('freezed');
+				playSound('audio/yes.mp3');
+			}
+		},
 		playSound = function (src) {
 			var audio = new Audio();
 			audio.src = src;
@@ -94,15 +133,11 @@ var memory = (function () {
 		},
 		addListeners = function () {
 			field.addEventListener('click', flip);
-			var items = document.getElementsByClassName('item');
-			// for ( var i  = 0, len = items.length; i < len; i++ ) {
-			// 		var item = items[i];
-			// 		flip( item );
-			// 	}
 			newGame.addEventListener('click', function () {
 				location.reload();
 			});
 			field.addEventListener('click', startTimer);
+			document.getElementById('show').addEventListener('click', showHide);
 		},
 		init = function () {
 			makeColors();

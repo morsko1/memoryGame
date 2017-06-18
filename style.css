@@ -25,7 +25,12 @@
 img{
 	width: 100%;
 }
-
+button {
+	position: absolute;
+	top:0;
+	right: 0;
+	padding: 1em;
+}
 .front,
 .back {
 	position: absolute;
@@ -41,14 +46,17 @@ img{
 .flipped .front {
 	transform: rotateY(0deg);
 }
-
 .flipped .back {
 	transform: rotateY(180deg);
 }
-.hidden{
+.freezed>.front {
+	backface-visibility: visible;
+	transform-style: none;
+}
+.freezed>img {
 	display: none;
 }
-.hidden-forever{
+.hidden{
 	display: none;
 }
 .info{
