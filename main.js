@@ -1,14 +1,14 @@
 var memory = (function () {
 	var field = document.getElementById('field'),
-		steps = document.getElementById('steps'),
-		newGame = document.getElementById('newgame'),
-		colors = [],
-		counter = 0,
-		timerStarted = false,
-		gameFinished = false,
-		timerSec,
-		timerMin,
-		numSteps = 0,
+			steps = document.getElementById('steps'),
+			newGame = document.getElementById('newgame'),
+			colors = [],
+			counter = 0,
+			timerStarted = false,
+			gameFinished = false,
+			timerSec,
+			timerMin,
+			numSteps = 0,
 		makeColors = function () {
 			for (var i=0; i<field.children.length/2; i++) {
 				var color = '#' + Math.floor(Math.random() * 16777215).toString(16);
@@ -16,21 +16,21 @@ var memory = (function () {
 			}
 		},
 		setColors = function () {
-				function getRandomInt(min, max) {
-					return Math.floor(Math.random() * (max - min + 1)) + min;
-				}
+			function getRandomInt(min, max) {
+				return Math.floor(Math.random() * (max - min + 1)) + min;
+			}
 			var fronts = document.getElementsByClassName('front');
 			var arr = [];
 			for (var k = 0; k<fronts.length; k++) {
 				arr.push(k);
 			}
-			// console.log(arr);
 			for (var i=0; i<fronts.length; i++) {
 				var front = fronts[i];
 				var l = getRandomInt(0, arr.length-1);
 				front.style.backgroundColor = colors[arr.splice(l, 1)];
 			}
 		},
+		// Вспомогательный метод. Переворачивает все закрытые карточки
 		showHide = function () {
 			var items = document.getElementsByClassName('item');
 			for (var i=0; i<items.length; i++) {
@@ -57,34 +57,46 @@ var memory = (function () {
 			counter = 0;
 			} // end if
 
-			target.classList.contains('flipped') === true ? target.classList.remove('flipped') : target.classList.add('flipped');
+			(target.classList.contains('flipped') === true) ? target.classList.remove('flipped') : target.classList.add('flipped');
 			counter++;
 
 			if (areSame()) {
-				console.log('same');
 				freeze();
 			}
+
 			// if game finished
 			if (document.getElementsByClassName('item').length === document.getElementsByClassName('freezed').length) {
 				finishGame();
 			}
 		},
+		// отфильтровывает элементы, содержащие класс 'freezed'
+		returnNotFreezed = function (elem) {
+			if ( !elem.classList.contains('freezed')) {
+				return elem;
+			}
+		},
+		// метод, сравнивающий цвета двух открытых карточек
 		areSame = function () {
 			var items = document.getElementsByClassName('flipped');
-			if (items.length !== 2) {
+			arr = Array.prototype.slice.call(items);
+
+			// отфильтровать те, которые содержат класс freezed
+			arr = arr.filter(returnNotFreezed);
+
+			if (arr.length !== 2) {
 				return false;
 			}
-			if (items[0].firstElementChild.style.backgroundColor === items[1].firstElementChild.style.backgroundColor) {
+			if (arr[0].firstElementChild.style.backgroundColor === arr[1].firstElementChild.style.backgroundColor) {
 				return true;
 			}
 			return false;
 		},
+		// методб замораживающий совпадающие карточки. Вызывается если метод areSame возвращает TRUE
 		freeze = function () {
 			// querySelectorAll для того, чтобы список элементов был нединамическим
 			var items = document.querySelectorAll('.flipped');
 			for (var i=0; i<items.length; i++) {
 				var item = items[i];
-				item.classList.remove('flipped');
 				item.classList.add('freezed');
 				playSound('audio/yes.mp3');
 			}
