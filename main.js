@@ -49,16 +49,22 @@ var memory = (function () {
 			if (counter === 2) {
 				for (var i=0; i<field.children.length; i++) {
 					var item = field.children[i];
-					if (item.classList.contains('freezed')) {
-						continue;
+					if (item !== target && !item.classList.contains('freezed')) {
+						item.classList.remove('flipped');
 					}
-					item.classList.remove('flipped');
+				} // enf for
+				counter = 0;
+				if (target.classList.contains('flipped') === true)  {
+					target.classList.remove('flipped');
+				} else {
+					target.classList.add('flipped');
+					counter++;
 				}
-			counter = 0;
-			} // end if
 
-			(target.classList.contains('flipped') === true) ? target.classList.remove('flipped') : target.classList.add('flipped');
-			counter++;
+			} else { // counter not equal 2
+				(target.classList.contains('flipped') === true) ? target.classList.remove('flipped') : target.classList.add('flipped');
+				counter++;
+			}
 
 			if (areSame()) {
 				freeze();
@@ -68,6 +74,8 @@ var memory = (function () {
 			if (document.getElementsByClassName('item').length === document.getElementsByClassName('freezed').length) {
 				finishGame();
 			}
+			console.log(counter);
+
 		},
 		// отфильтровывает элементы, содержащие класс 'freezed'
 		returnNotFreezed = function (elem) {
@@ -91,7 +99,7 @@ var memory = (function () {
 			}
 			return false;
 		},
-		// методб замораживающий совпадающие карточки. Вызывается если метод areSame возвращает TRUE
+		// метод, замораживающий совпадающие карточки. Вызывается если метод areSame возвращает TRUE
 		freeze = function () {
 			// querySelectorAll для того, чтобы список элементов был нединамическим
 			var items = document.querySelectorAll('.flipped');
